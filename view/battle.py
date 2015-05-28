@@ -12,16 +12,16 @@ class Fight(threading.Thread):
 	animation_type = 0
 	call_ani_again = True
 
-	life_1 = 350
-	life_2 = 350
+	life_hero = 350
+	life_enemy = 350
 
 	def __init__(self, display):
 		threading.Thread.__init__(self)
 		self.DISPLAY_THREAD = display
 		self.DISPLAY = self.DISPLAY_THREAD.get_display()
 		self.fontObj = pygame.font.Font('freesansbold.ttf', 15)
-		self.life_1_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
-		self.life_2_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
+		self.life_hero_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
+		self.life_enemy_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
 
 	def run(self):
 		fpsClock = pygame.time.Clock()
@@ -40,11 +40,11 @@ class Fight(threading.Thread):
 			for element in display_elements:
 				self.DISPLAY.blit(element, (200, 300))
 
-			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (10, 10, self.life_1, 20))
-			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (790 - self.life_2, 10, self.life_2, 20))
+			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (10, 10, self.life_hero, 20))
+			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (790 - self.life_enemy, 10, self.life_enemy, 20))
 			
-			self.DISPLAY.blit(self.life_1_obj, (10, 40))
-			self.DISPLAY.blit(self.life_2_obj, (750, 40))
+			self.DISPLAY.blit(self.life_hero_obj, (10, 40))
+			self.DISPLAY.blit(self.life_enemy_obj, (750, 40))
 
 			pygame.display.update()
 			fpsClock.tick(self.DISPLAY_THREAD.get_fps())
@@ -107,15 +107,15 @@ class Fight(threading.Thread):
 
 	def set_life(self, life, modifier):	# modifier - percent
 		if life == 1:
-			self.life_1 = modifier * 350
+			self.life_hero = modifier * 350
 		else:
-			self.life_2 = modifier * 350
+			self.life_enemy = modifier * 350
 
 	def set_num_life(self, life, string):
 		if life == 1:
-			self.life_1_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
+			self.life_hero_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
 		else:
-			self.life_2_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
+			self.life_enemy_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
 
 	def game_over(self):
 		loseImg = pygame.image.load('data/img/game_over.png')

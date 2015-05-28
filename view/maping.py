@@ -26,7 +26,7 @@ class Map:
 		self.txt_to_list()
 		self.__map_matrix = self.get_map_matrix()
 
-	def txt_to_list(self):	# gambiarra
+	def txt_to_list(self):
 		arq = open(self.__path,'rt')
 		content = arq.readline()
 		i = 0
@@ -97,27 +97,27 @@ class Map:
 			map_index.pos_x += x
 			map_index.pos_y += y
 
-	def isPermitted(self, i, j, direction):
+	def isPermitted(self, line, colunm, direction):
 		if direction == 'right':
-			if self.__map_matrix[i][j + 1] == ' ':
+			if self.__map_matrix[line][colunm + 1] == ' ':
 				self.move_map( -50, 0)
 			
-			return self.__map_matrix[i][j + 1]
+			return self.__map_matrix[line][colunm + 1]
 
 		elif direction == 'left':
-			if self.__map_matrix[i][j - 1] == ' ':
+			if self.__map_matrix[line][colunm - 1] == ' ':
 				self.move_map( 50, 0)
 
-			return self.__map_matrix[i][j - 1]
+			return self.__map_matrix[line][colunm - 1]
 
 		elif direction == 'down':
-			if self.__map_matrix[i + 1][j] == ' ':
+			if self.__map_matrix[line + 1][colunm] == ' ':
 				self.move_map( 0, -40)
 
-			return self.__map_matrix[i + 1][j]
+			return self.__map_matrix[line + 1][colunm]
 
 		elif direction == 'up':
-			if self.__map_matrix[i - 1][j] == ' ':
+			if self.__map_matrix[line - 1][colunm] == ' ':
 				self.move_map( 0, 40)
 
-			return self.__map_matrix[i - 1][j]
+			return self.__map_matrix[line - 1][colunm]

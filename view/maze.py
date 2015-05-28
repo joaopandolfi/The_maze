@@ -25,13 +25,13 @@ class Maze():
 		while True:
 			key = self.DISPLAY_THREAD.get_event()
 			
-			if key == 274:
+			if key == K_DOWN:
 				if option_y == 476:
 					option_y = 390
 				else:
 					option_y += 43
 
-			elif key == 273:
+			elif key == K_UP:
 				if option_y == 390:
 					option_y = 476
 				else:
@@ -52,7 +52,7 @@ class Maze():
 		while True:
 			key = self.DISPLAY_THREAD.get_event()
 
-			if key == 275:
+			if key == K_RIGHT:
 				self.player.set_animation('right')
 				temp_event = self.map.isPermitted(self.player.i , self.player.j, 'right')
 
@@ -67,7 +67,7 @@ class Maze():
 				elif temp_event == 'F':
 					return ('F', 0)
 
-			elif key == 276:
+			elif key == K_LEFT:
 				self.player.set_animation('left')
 				temp_event = self.map.isPermitted(self.player.i , self.player.j, 'left')
 
@@ -82,7 +82,7 @@ class Maze():
 				elif temp_event == 'F':
 					return ('F', 0)
 
-			elif key == 274:
+			elif key == K_DOWN:
 				self.player.set_animation('down')
 				temp_event = self.map.isPermitted(self.player.i , self.player.j, 'down')
 				
@@ -97,7 +97,7 @@ class Maze():
 				elif temp_event == 'F':
 					return ('F', 0)
 
-			elif key == 273:
+			elif key == K_UP:
 				self.player.set_animation('up')
 				temp_event = self.map.isPermitted(self.player.i , self.player.j, 'up')
 
