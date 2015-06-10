@@ -22,3 +22,15 @@ arquivo python.exe baixado, ex.. python31.exe)
 e chamar o programa principal (main.py) pelo launcher do python baixado
 para facilitar o uso é aconselhado a criação de um shell script para
 abertura do programa
+
+Instalar Pygame no linux
+
+sudo apt-get install mercurial python3-dev libjpeg-dev libpng12-dev libportmidi-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev libx11-dev ttf-freefont libavformat-dev libswscale-dev
+hg clone -u 01b2cb16dc17 https://bitbucket.org/pygame/pygame
+cd pygame
+python3 config.py
+2to3 setup.py -w
+python3 setup.py build
+sudo python3 setup.py install
+
+Pronto :3

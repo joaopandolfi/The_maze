@@ -52,6 +52,8 @@ class Status():
 	def level_up(self):
 		#recalcula novo level
 		self.set_level(self.level +1)
+		#recupera vida
+		self.recover_life(self.level*2 + 1)
 	
 	#setters
 	def set_level(self,level):

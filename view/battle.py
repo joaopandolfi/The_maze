@@ -42,13 +42,8 @@ class Fight(threading.Thread):
 			for element in display_elements:
 				self.DISPLAY.blit(element, (200, 300))
 
-			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (10, 10, self.life_hero, 20))
-			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (790 - self.life_enemy, 10, self.life_enemy, 20))
-			
-			self.DISPLAY.blit(self.life_hero_obj, (10, 40))
-			self.DISPLAY.blit(self.life_enemy_obj, (440, 40))
-			self.DISPLAY.blit(self.name_hero_obj, (10, 60))
-			self.DISPLAY.blit(self.name_enemy_obj, (440, 60))
+			#print status bar
+			self.print_status()
 
 			pygame.display.update()
 			fpsClock.tick(self.DISPLAY_THREAD.get_fps())
@@ -96,6 +91,7 @@ class Fight(threading.Thread):
 
 		for element in animation_sprite_list:
 			self.DISPLAY.fill(self.COLOR)
+			self.print_status()
 			self.DISPLAY.blit(element, (200, 300))
 			pygame.display.update()
 			time.sleep(animation_time)
@@ -103,6 +99,14 @@ class Fight(threading.Thread):
 		self.animation = False
 		self.animation_type = 0
 		self.call_ani_again = True
+
+	def print_status(self):
+		pygame.draw.rect(self.DISPLAY, (0, 200, 0), (10, 10, self.life_hero, 20))
+		pygame.draw.rect(self.DISPLAY, (0, 200, 0), (790 - self.life_enemy, 10, self.life_enemy, 20))
+		self.DISPLAY.blit(self.life_hero_obj, (10, 40))
+		self.DISPLAY.blit(self.life_enemy_obj, (440, 40))
+		self.DISPLAY.blit(self.name_hero_obj, (10, 60))
+		self.DISPLAY.blit(self.name_enemy_obj, (440, 60))
 
 	def get_event(self):
 		temp_event = self.event
@@ -131,6 +135,7 @@ class Fight(threading.Thread):
 		while self.animation == True:
 			pass
 
+		self.print_status()
 		loseImg = pygame.image.load('data/img/game_over.png')
 		self.DISPLAY.blit(loseImg, (0, 0))
 		pygame.display.update()
@@ -138,3 +143,5 @@ class Fight(threading.Thread):
 
 	def end(self):
 		self.__end = False
+		if self.animation_type != 0: #chama animação pendente, se houver
+			self.do_animation() 

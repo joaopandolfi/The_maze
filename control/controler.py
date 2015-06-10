@@ -77,7 +77,7 @@ def start_game():
 						if(personagem.take_damage(enemy.get_damage())):
 							while not fight.call_animation(2):	# call animation of an atack
 								pass
-
+								
 							#life Personagem
 							fight.set_num_life(1, "0/"+ str(personagem.get_max_life()))
 							fight.set_life(1, 0)
@@ -94,7 +94,7 @@ def start_game():
 							display.end()
 							pygame.quit()
 							sys.exit()
-
+						
 						while not fight.call_animation(2):	# call animation of an atack
 							pass
 
