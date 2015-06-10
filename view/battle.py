@@ -22,6 +22,8 @@ class Fight(threading.Thread):
 		self.fontObj = pygame.font.Font('freesansbold.ttf', 15)
 		self.life_hero_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
 		self.life_enemy_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
+		self.name_hero_obj = self.fontObj.render('X', True, (0,200,0) ,self.COLOR)
+		self.name_enemy_obj = self.fontObj.render('X', True, (0,200,0) ,self.COLOR)
 
 	def run(self):
 		fpsClock = pygame.time.Clock()
@@ -44,7 +46,9 @@ class Fight(threading.Thread):
 			pygame.draw.rect(self.DISPLAY, (0, 200, 0), (790 - self.life_enemy, 10, self.life_enemy, 20))
 			
 			self.DISPLAY.blit(self.life_hero_obj, (10, 40))
-			self.DISPLAY.blit(self.life_enemy_obj, (750, 40))
+			self.DISPLAY.blit(self.life_enemy_obj, (440, 40))
+			self.DISPLAY.blit(self.name_hero_obj, (10, 60))
+			self.DISPLAY.blit(self.name_enemy_obj, (440, 60))
 
 			pygame.display.update()
 			fpsClock.tick(self.DISPLAY_THREAD.get_fps())
@@ -63,7 +67,7 @@ class Fight(threading.Thread):
 		animation_sprite_list = []
 
 		if self.animation_type == 1:
-			animation_time = 0.3 # tempo em segundos da animação
+			animation_time = 0.4 # tempo em segundos da animação
 
 			animation_sprite_list = [
 				pygame.image.load('data/animation/ani_1_1.png'),
@@ -76,7 +80,7 @@ class Fight(threading.Thread):
 			]
 
 		elif self.animation_type == 2:
-			animation_time = 0.3 # tempo em segundos da animação
+			animation_time = 0.4 # tempo em segundos da animação
 
 			animation_sprite_list = [
 				pygame.transform.flip(pygame.image.load('data/animation/ani_1_1.png'), True, False),
@@ -117,7 +121,16 @@ class Fight(threading.Thread):
 		else:
 			self.life_enemy_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
 
+	def set_player_name(self, player, name):
+		if player == 'hero':
+			self.name_hero_obj = self.fontObj.render(name, True, (0,200,0) ,self.COLOR)
+		else:
+			self.name_enemy_obj = self.fontObj.render(name, True, (0,200,0) ,self.COLOR)
+
 	def game_over(self):
+		while self.animation == True:
+			pass
+
 		loseImg = pygame.image.load('data/img/game_over.png')
 		self.DISPLAY.blit(loseImg, (0, 0))
 		pygame.display.update()
