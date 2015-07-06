@@ -1,6 +1,8 @@
 import threading
 import time
 import pygame, sys
+
+from view import animationFactory
 from pygame.locals import *
 from view import screen
 
@@ -24,6 +26,7 @@ class Fight(threading.Thread):
 		self.life_enemy_obj = self.fontObj.render('100', True, (0,200,0) ,self.COLOR)
 		self.name_hero_obj = self.fontObj.render('X', True, (0,200,0) ,self.COLOR)
 		self.name_enemy_obj = self.fontObj.render('X', True, (0,200,0) ,self.COLOR)
+		self.animationClass = animationFactory.AnimationFactory()
 
 	def run(self):
 		fpsClock = pygame.time.Clock()
@@ -63,29 +66,11 @@ class Fight(threading.Thread):
 
 		if self.animation_type == 1:
 			animation_time = 0.4 # tempo em segundos da animação
-
-			animation_sprite_list = [
-				pygame.image.load('data/animation/ani_1_1.png'),
-				pygame.image.load('data/animation/ani_1_2.png'),
-				pygame.image.load('data/animation/ani_1_3.png'),
-				pygame.image.load('data/animation/ani_1_4.png'),
-				pygame.image.load('data/animation/ani_1_5.png'),
-				pygame.image.load('data/animation/ani_1_6.png'),
-				pygame.image.load('data/animation/ani_1_7.png')
-			]
+			animation_sprite_list = self.animationClass.get_animation('ani1')
 
 		elif self.animation_type == 2:
 			animation_time = 0.4 # tempo em segundos da animação
-
-			animation_sprite_list = [
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_1.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_2.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_3.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_4.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_5.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_6.png'), True, False),
-				pygame.transform.flip(pygame.image.load('data/animation/ani_1_7.png'), True, False)
-			]
+			animation_sprite_list = self.animationClass.get_animation('ani2')
 
 		animation_time = animation_time / len(animation_sprite_list)
 

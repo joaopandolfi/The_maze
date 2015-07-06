@@ -78,3 +78,11 @@ class Player:
 	def print_player(self, display):
 		self.update()
 		display.blit(self.playerImg[self.__animation_index], (self.__pos_x, self.__pos_y))
+
+	def set_player_status(self, positions):
+		if positions == 'none':
+			return
+
+		local = positions.split("|")
+		self.i = int(local[0])
+		self.j = int(local[1])
