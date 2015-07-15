@@ -9,25 +9,36 @@ from model.persist import DAO
 from model import personagemFactory
 from model import enemyFactory
 
+CONST_OPTION = 0
+CONST_NAME_HERO = 1
+CONST_OPT_SPLIT = '|'
+
+CONST_KEY_W = 119
+CONST_KEY_ESCAPE = 27
+
+CONST_HERO = 'hero'
+CONST_ENEMY = 'enemy'
+
+CONST_ANI_1 = 'hero_atack'
+CONST_ANI_2 = 'enemy_atack'
+
 class GameControl:
 	def __init__(self):
-		self.display = screen.Screen()	# instancia a tela
+		self.display = screen.Screen()
 		self.display.start()
-		self.maze_game = maze.Maze(self.display)		# view do labirinto
-		self.initial_menu = menu.Menu(self.display)		# view do menu	
+		self.maze_game = maze.Maze(self.display)
+		self.initial_menu = menu.Menu(self.display)
 		self.factory_personagem = personagemFactory.PersonagemFactory()
 		self.personagem = None
 		self.factory_enemy = enemyFactory.EnemyFactory()
 
 	def show_menu(self):
 		option = self.initial_menu.show()
-		option = option.split('|')
-		self.personagem = self.factory_personagem.create_personagem(option[1])
-
-		# cretae a first register in DB if is a new login
+		option = option.split(CONST_OPT_SPLIT)
+		self.personagem = self.factory_personagem.create_personagem(option[CONST_NAME_HERO])
 		db = DAO.Dao()
 		db.saveOnDb(self.personagem.get_name())
-		return option[0]
+		return option[CONST_OPTION]
 
 	def begin(self):
 		choice = self.show_menu()
@@ -47,7 +58,16 @@ class GameControl:
 		elif choice == 'exit':
 			self.end_game()
 
+	def set_person_data(self):
+		life = "life : " + str(self.personagem.get_life()) + "/" + str(self.personagem.get_max_life())
+		level = "level : " + str(self.personagem.get_level())
+
+		self.maze_game.set_status_list([life, level])
+		self.maze_game.set_inventory_list(['item 1', 'item 2', 'item 3', 'item 4', 'item 5'])
+
 	def start_game(self):
+		self.set_person_data()
+
 		while True:
 			map_event = self.maze_game.free_walk()
 
@@ -71,70 +91,63 @@ class GameControl:
 	def enemy_event(self, enemyType):
 		fight = battle.Fight(self.display)
 		fight.start()
-		
-		#check enemy type and create
+
 		if(enemyType == '1'):
 			enemy = self.factory_enemy.create_SrBilugo()
+
 		elif(enemyType == '2'):
 			enemy = self.factory_enemy.create_piruleta()
+
 		elif(enemyType == '3'):
 			enemy = self.factory_enemy.create_rei_da_cacimbinha()
 
-		#life Personagem
-		fight.set_num_life(1, str(self.personagem.get_life()) +"/"+ str(self.personagem.get_max_life()))
-		fight.set_life(1, self.personagem.get_percent_life())
-		#name self.Personagem
-		fight.set_player_name('hero', str(self.personagem.get_name()) + ' (lvl '+ str(self.personagem.get_level()) + ')')
-		#life Enemy
-		fight.set_num_life(2, str(enemy.get_life())+"/"+str(enemy.get_max_life()))
-		fight.set_life(2, enemy.get_percent_life())
-		#name Enemy
-		fight.set_player_name('enemy', enemy.get_name())
-		#loop Battle
+		fight.set_num_life(CONST_HERO, str(self.personagem.get_life()) + "/" + str(self.personagem.get_max_life()))
+		fight.set_life(CONST_HERO, self.personagem.get_percent_life())
+		fight.set_player_name(CONST_HERO, str(self.personagem.get_name()) + ' (lvl '+ str(self.personagem.get_level()) + ')')
+
+		fight.set_num_life(CONST_ENEMY, str(enemy.get_life()) + "/" + str(enemy.get_max_life()))
+		fight.set_life(CONST_ENEMY, enemy.get_percent_life())
+		fight.set_player_name(CONST_ENEMY, enemy.get_name())
+
 		while True:
 			key_event = fight.get_event()
 
-			if key_event == 119:	#verify key and do something - 119 = 'w'
-				#hero attack first								
-				#enemy take damage and check dead
+			if key_event == CONST_KEY_W:
 				if(enemy.take_damage(self.personagem.get_damage())):
-					if(self.personagem.receive_XP(enemy.get_experience_reward())): #send XP to player
+					if(self.personagem.receive_XP(enemy.get_experience_reward())):
 						#self.personagem.get_level() #retorna novo lvl da criança
+						self.set_person_data()
 						pass
 
-					#add drop for player
 					drop = enemy.get_drop()
-					#IMPRIMA DROP -Item-
 					self.personagem.receive_item(drop)
 
-					fight.call_animation(1)	# call animation of an atack
-					#life self.Personagem
-					fight.set_num_life(1, str(self.personagem.get_life()) +"/"+ str(self.personagem.get_max_life()))
-					fight.set_life(1, self.personagem.get_percent_life())
-					#life Enemy
-					fight.set_num_life(2, "0/"+str(enemy.get_max_life()))
-					enemy = None		
+					while not fight.call_animation(CONST_ANI_1):
+						pass
+
+					fight.set_num_life(CONST_HERO, str(self.personagem.get_life()) + "/" + str(self.personagem.get_max_life()))
+					fight.set_life(CONST_HERO, self.personagem.get_percent_life())
+					fight.set_num_life(CONST_ENEMY, "0/" + str(enemy.get_max_life()))
+					enemy = None
 					fight.end()
 					break
 
-				while not fight.call_animation(1):	# call animation of an atack
+				while not fight.call_animation(CONST_ANI_1):
 					pass
 
-				#enemy's Attack
-				#player take damage and check dead
+				fight.set_num_life(CONST_ENEMY, str(enemy.get_life()) + '/' + str(enemy.get_max_life()))
+				fight.set_life(CONST_ENEMY, enemy.get_percent_life())
+
 				if(self.personagem.take_damage(enemy.get_damage())):
-					while not fight.call_animation(2):	# call animation of an atack
+					while not fight.call_animation(CONST_ANI_2):
 						pass
-						
-					#life self.Personagem
-					fight.set_num_life(1, "0/"+ str(self.personagem.get_max_life()))
-					fight.set_life(1, 0)
-					#name self.Personagem
-					fight.set_player_name('hero', str(self.personagem.get_name()) + ' (lvl '+ str(self.personagem.get_level()) + ')')
-					#life Enemy
-					fight.set_num_life(2, str(enemy.get_life())+"/"+str(enemy.get_max_life()))
-					fight.set_life(2, enemy.get_percent_life())
-					#name Enemy
+
+					fight.set_num_life(CONST_HERO, "0/" + str(self.personagem.get_max_life()))
+					fight.set_life(CONST_HERO, 0)
+					fight.set_player_name(CONST_HERO, str(self.personagem.get_name()) + ' (lvl ' + str(self.personagem.get_level()) + ')')
+
+					fight.set_num_life(CONST_ENEMY, str(enemy.get_life()) + "/" + str(enemy.get_max_life()))
+					fight.set_life(CONST_ENEMY, enemy.get_percent_life())
 					fight.set_player_name('enemy', enemy.get_name())
 
 					fight.end()
@@ -142,17 +155,13 @@ class GameControl:
 					self.display.end()
 					return 'lose'
 				
-				while not fight.call_animation(2):	# call animation of an atack
+				while not fight.call_animation(CONST_ANI_2):
 					pass
 
-				#life self.Personagem
-				fight.set_num_life(1, str(self.personagem.get_life()) +"/"+ str(self.personagem.get_max_life()))
-				fight.set_life(1, self.personagem.get_percent_life())
-				#life Enemy
-				fight.set_num_life(2, str(enemy.get_life())+'/'+str(enemy.get_max_life()))
-				fight.set_life(2, enemy.get_percent_life())
+				fight.set_num_life(CONST_HERO, str(self.personagem.get_life()) + "/" + str(self.personagem.get_max_life()))
+				fight.set_life(CONST_HERO, self.personagem.get_percent_life())
 
-			if key_event == 27:
+			if key_event == CONST_KEY_ESCAPE:
 				fight.end()
 				break
 

@@ -60,24 +60,24 @@ class Fight(threading.Thread):
 		else:
 			return False
 
-
 	def do_animation(self):
 		animation_sprite_list = []
+		default_time = 0.4
 
-		if self.animation_type == 1:
-			animation_time = 0.4 # tempo em segundos da animação
-			animation_sprite_list = self.animationClass.get_animation('ani1')
+		if self.animation_type == animationFactory.CONST_ANIM_01:
+			animation_time = default_time
+			animation_sprite_list = self.animationClass.get_animation(animationFactory.CONST_ANIM_01)
 
-		elif self.animation_type == 2:
-			animation_time = 0.4 # tempo em segundos da animação
-			animation_sprite_list = self.animationClass.get_animation('ani2')
+		elif self.animation_type == animationFactory.CONST_ANIM_02:
+			animation_time = default_time
+			animation_sprite_list = self.animationClass.get_animation(animationFactory.CONST_ANIM_02)
 
 		animation_time = animation_time / len(animation_sprite_list)
 
 		for element in animation_sprite_list:
 			self.DISPLAY.fill(self.COLOR)
 			self.print_status()
-			self.DISPLAY.blit(element, (200, 300))
+			self.DISPLAY.blit(element, (200, 300))	# temporary
 			pygame.display.update()
 			time.sleep(animation_time)
 
@@ -98,22 +98,22 @@ class Fight(threading.Thread):
 		self.event = 0
 		return temp_event
 
-	def set_life(self, life, modifier):	# modifier - percent
-		if life == 1:
+	def set_life(self, player, modifier):	# modifier - percent
+		if player == 'hero':
 			self.life_hero = modifier * 350
-		else:
+		elif player == 'enemy':
 			self.life_enemy = modifier * 350
 
-	def set_num_life(self, life, string):
-		if life == 1:
+	def set_num_life(self, player, string):
+		if player == 'hero':
 			self.life_hero_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
-		else:
+		elif player == 'enemy':
 			self.life_enemy_obj = self.fontObj.render(string, True, (0,200,0) ,self.COLOR)
 
 	def set_player_name(self, player, name):
 		if player == 'hero':
 			self.name_hero_obj = self.fontObj.render(name, True, (0,200,0) ,self.COLOR)
-		else:
+		elif player == 'enemy':
 			self.name_enemy_obj = self.fontObj.render(name, True, (0,200,0) ,self.COLOR)
 
 	def game_over(self):

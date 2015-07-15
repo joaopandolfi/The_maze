@@ -18,8 +18,8 @@ class Dao:
 	def saveGame(self, name, obj):
 		conn = sqlite3.connect('data/db/maze.db')
 		cursor = conn.cursor()		
-		sql = 'UPDATE saves SET name = ?, mapObj = ?, playerObj = ? WHERE name = \"' + name + '\"'
-		cursor.execute(sql, (name, obj.mapObj, obj.playerObj))
+		sql = 'UPDATE saves SET mapObj = ?, playerObj = ? WHERE name = \"' + name + '\"'
+		cursor.execute(sql, (obj.mapObj, obj.playerObj))
 		conn.commit()
 		conn.close()
 

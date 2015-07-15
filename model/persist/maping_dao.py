@@ -8,7 +8,8 @@ class MapingDAO:
 		saveMap = self.map_obj.get_map_obj()
 		returnObj = ''
 
-		for mapElement in saveMap:
-			returnObj += mapElement.element_type + '|' + str(mapElement.pos_x) + '|' + str(mapElement.pos_y) + '&'
-			
+		for matrix_line in saveMap:
+			for matrix_column in matrix_line:
+				returnObj += matrix_column.element_type + '|' + str(matrix_column.pos_x) + '|' + str(matrix_column.pos_y) + '&'
+
 		return returnObj			

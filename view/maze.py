@@ -29,7 +29,7 @@ class Maze():
 
 	def continue_game(self, obj):
 		self.player.set_player_status(obj[2])
-		self.map.set_map_list(obj[1])
+		self.map.set_map_matrix(obj[1])
 
 	def free_walk(self):
 		fpsClock = pygame.time.Clock()
@@ -37,6 +37,7 @@ class Maze():
 
 		while True:
 			key = self.DISPLAY_THREAD.get_event()
+			time.clock()
 
 			if key == K_RIGHT:
 				self.player.set_animation('right')
@@ -47,6 +48,7 @@ class Maze():
 					self.player.j += 1
 
 				elif temp_event[0] == 'enemy':
+					self.player.j += 1
 					return ('ENEMY', temp_event[1])	# (event, type)
 
 				elif temp_event[0] == 'win':
@@ -61,6 +63,7 @@ class Maze():
 					self.player.j -= 1
 
 				elif temp_event[0] == 'enemy':
+					self.player.j -= 1
 					return ('ENEMY', temp_event[1])	# (event, type)
 
 				elif temp_event[0] == 'win':
@@ -75,6 +78,7 @@ class Maze():
 					self.player.i += 1
 
 				elif temp_event[0] == 'enemy':
+					self.player.i += 1
 					return ('ENEMY', temp_event[1])	# (event, type)
 
 				elif temp_event[0] == 'win':
@@ -89,6 +93,7 @@ class Maze():
 					self.player.i -= 1
 
 				elif temp_event[0] == 'enemy':
+					self.player.i -= 1
 					return ('ENEMY', temp_event[1])	# (event, type)
 
 				elif temp_event[0] == 'win':
@@ -113,7 +118,8 @@ class Maze():
 					self.show_esc = False
 				else:
 					self.show_esc = True
-
+					self.show_inventory = False
+					self.show_status = False
 			else:
 				self.player.set_animation('center')
 
@@ -121,7 +127,7 @@ class Maze():
 			self.map.print_upper_part_map(self.DISPLAY)
 			self.player.print_player(self.DISPLAY)
 			self.map.print_lower_part_map(self.DISPLAY)
-			#self.DISPLAYSURF.blit(self.blurImg, (0,0))
+			self.DISPLAY.blit(self.blurImg, (0,0))
 
 			if self.show_inventory:
 				self.print_list(self.__inventory_list)
@@ -129,7 +135,7 @@ class Maze():
 			elif self.show_status:
 				self.print_list(self.__status_list)
 
-			elif self.show_esc:
+			if self.show_esc:
 				options_result = self.show_escape()
 
 				if options_result == 'continue':
@@ -141,6 +147,8 @@ class Maze():
 				elif options_result == 'exit':
 					return 'END'
 
+			text_obj = self.fontObj.render(str(time.clock()), True, (255,255,255), (0,0,0))
+			self.DISPLAY.blit(text_obj, (20, 570))
 			pygame.display.update()
 			fpsClock.tick(fps)
 
@@ -151,6 +159,9 @@ class Maze():
 		self.__inventory_list = myList
 
 	def print_list(self, myList):
+		if len(myList) == 0:
+			myList = ['empty']
+
 		height = len(myList)
 		width = len(max(myList, key = len))
 		pygame.draw.rect(self.DISPLAY, (100, 100, 100), (10, 10, width * 11 + 10, height * 25))
